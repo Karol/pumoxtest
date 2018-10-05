@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2036
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PumoxTest", "PumoxTest\PumoxTest.csproj", "{84CB3769-C30F-4B16-84AD-B93854D53F8F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{84CB3769-C30F-4B16-84AD-B93854D53F8F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{84CB3769-C30F-4B16-84AD-B93854D53F8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{84CB3769-C30F-4B16-84AD-B93854D53F8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{84CB3769-C30F-4B16-84AD-B93854D53F8F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {280C7EB0-618C-44BD-978D-003839C0CBB1}
+	EndGlobalSection
+EndGlobal
