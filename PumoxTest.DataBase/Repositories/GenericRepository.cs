@@ -19,18 +19,6 @@ namespace PumoxTest.DataBase.Repositories
         }
 
         #region Get
-        public virtual IEnumerable<TEntity> GetAsNoTracking(Expression<Func<TEntity, bool>> filter = null,
-           Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
-            params Expression<Func<TEntity, object>>[] includeProperties)
-        {
-            IQueryable<TEntity> query = CreateQuery(filter, orderBy);
-            foreach (var include in includeProperties)
-            {
-                query = query.Include(include);
-            }
-            return query.AsNoTracking().ToList();
-        }
-
         public virtual IEnumerable<TEntity> Get(Expression<Func<TEntity, bool>> filter = null,
            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
             params Expression<Func<TEntity, object>>[] includeProperties)
@@ -46,11 +34,6 @@ namespace PumoxTest.DataBase.Repositories
         public IEnumerable<TEntity> Get(Expression<Func<TEntity, bool>> filter, params Expression<Func<TEntity, object>>[] includeProperties)
         {
             return Get(filter, null, includeProperties);
-        }
-
-        public IEnumerable<TEntity> GetAsNoTracking(Expression<Func<TEntity, bool>> filter, params Expression<Func<TEntity, object>>[] includeProperties)
-        {
-            return GetAsNoTracking(filter, null, includeProperties);
         }
 
         public IEnumerable<TEntity> Get(Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy,
@@ -80,60 +63,7 @@ namespace PumoxTest.DataBase.Repositories
             return GetInclude(null, orderBy, includeProperties);
         }
 
-        #endregion
-
-        #region GetRange
-
-        public virtual IEnumerable<TEntity> GetRange(Expression<Func<TEntity, bool>> filter,
-            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy,
-            int skipElementCount, int rangeElement,
-           params Expression<Func<TEntity, object>>[] includeProperties)
-        {
-            IQueryable<TEntity> query = DbSet;
-
-            if (filter != null)
-            {
-                query = query.Where(filter);
-            }
-
-            foreach (var include in includeProperties)
-            {
-                query = query.Include(include);
-            }
-
-            return orderBy(query).Skip(skipElementCount).Take(rangeElement).ToList();
-        }
-
-
-        public IEnumerable<TEntity> GetRange(Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy,
-            int skipElementCount, int rangeElement, params Expression<Func<TEntity, object>>[] includeProperties)
-        {
-            return GetRange(null, orderBy, skipElementCount, rangeElement, includeProperties);
-        }
-
-        public virtual IEnumerable<TEntity> GetRangeInclude(Expression<Func<TEntity, bool>> filter, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy, int skipElementCount, int rangeElement, params string[] includeProperties)
-        {
-            IQueryable<TEntity> query = DbSet;
-
-            if (filter != null)
-            {
-                query = query.Where(filter);
-            }
-
-            foreach (var include in includeProperties)
-            {
-                query = query.Include(include.Trim());
-            }
-
-            return orderBy(query).Skip(skipElementCount).Take(rangeElement).ToList();
-        }
-
-        public IEnumerable<TEntity> GetRangeInclude(Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy, int skipElementCount, int rangeElement, params string[] includeProperties)
-        {
-            return GetRangeInclude(null, orderBy, skipElementCount, rangeElement, includeProperties);
-        }
-
-        #endregion
+        #endregion        
 
         #region GetFirstOrDefault
 

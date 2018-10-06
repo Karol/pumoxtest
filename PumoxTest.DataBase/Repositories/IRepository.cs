@@ -32,28 +32,6 @@ namespace PumoxTest.DataBase.Repositories
 
         #endregion
 
-        #region GetRange
-
-        IEnumerable<TEntity> GetRange(Expression<Func<TEntity, bool>> filter,
-            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy,
-            int skipElementCount, int rangeElement,
-            params Expression<Func<TEntity, object>>[] includeProperties);
-
-        IEnumerable<TEntity> GetRange(Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy,
-            int skipElementCount, int rangeElement,
-            params Expression<Func<TEntity, object>>[] includeProperties);
-
-        IEnumerable<TEntity> GetRangeInclude(Expression<Func<TEntity, bool>> filter,
-            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy,
-            int skipElementCount, int rangeElement,
-            params string[] includeProperties);
-
-        IEnumerable<TEntity> GetRangeInclude(Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy,
-            int skipElementCount, int rangeElement,
-            params string[] includeProperties);
-
-        #endregion
-
         #region GetFirstOrDefault
 
         TEntity GetFirstOrDefault(Expression<Func<TEntity, bool>> filter,
