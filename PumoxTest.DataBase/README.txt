@@ -10,3 +10,6 @@ Przed uruchomieniem należy zmienić wpis:
 w pliku appsettings.json jeśli jest taka potrzeba.
 
 Baza danych jest podnoszona do najnowszej migracji i uzupełniana przykładowymi danymi automatycznie przy każdym uruchomieniu.
+
+BasicAuthentication: 
+user i password zdefiniowane bezpośrednio w AuthenticationEvents
