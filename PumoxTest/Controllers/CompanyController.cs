@@ -25,7 +25,11 @@ namespace PumoxTest.Controllers
         {
             try
             {
-                Company company = UnitOfWork.CompanyRepository.GetInclude(x=>x.Id==id, "Employees").First();
+                Company company = UnitOfWork.CompanyRepository.GetInclude(x=>x.Id==id, "Employees").FirstOrDefault();
+                if (company == null)
+                {
+                    return NotFound($"No company with id: {id}");
+                }
                 return Ok(company);
             }
             catch (Exception e)
@@ -33,6 +37,64 @@ namespace PumoxTest.Controllers
                 return StatusCode(500, e.ToString());
             }
         }
+
+        [HttpPost]
+        [Route("company/create")]
+        public IActionResult Create([FromBody] Company company)
+        {
+            try
+            {
+                UnitOfWork.CompanyRepository.Insert(company);
+                UnitOfWork.Save();
+
+                return Ok(new { company.Id });
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.ToString());
+            }
+        }
+
+        [HttpPut]
+        [ProducesResponseType(typeof(Company), 200)]
+        [Route("company/update/{id}")]
+        public IActionResult Update(long id, [FromBody] Company body)
+        {
+            try
+            {
+                Company company = UnitOfWork.CompanyRepository.GetInclude(x => x.Id == id, "Employees").First();
+                company.Name = body.Name;
+                company.EstablishmentYear = body.EstablishmentYear;
+                company.Employees = body.Employees;
+                UnitOfWork.CompanyRepository.Update(company);
+                UnitOfWork.Save();
+
+                return Ok(company);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.ToString());
+            }
+        }
+
+        [HttpDelete]
+        [Route("company/delete/{id}")]
+        public IActionResult Delete(long id)
+        {
+            try
+            {
+                Company company = UnitOfWork.CompanyRepository.GetInclude(x => x.Id == id, "Employees").First();
+                UnitOfWork.CompanyRepository.Delete(company);
+                UnitOfWork.Save();
+
+                return Ok("Delete sukcess");
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.ToString());
+            }
+        }
+        
 
         [HttpPost]
         [ProducesResponseType(typeof(CompanySearchResults), 200)]
