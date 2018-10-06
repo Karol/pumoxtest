@@ -72,15 +72,7 @@ namespace PumoxTest.DataBase.Repositories
 
         #endregion
 
-        int GetCount(Expression<Func<TEntity, bool>> filter = null);
-
         TEntity GetById(object id);
-
-        bool CheckIfExist(object id);
-
-        bool CheckIfExist(Expression<Func<TEntity, bool>> filter = null);
-
-        void Refresh(TEntity e);
 
         void Insert(TEntity entity);
 

@@ -175,35 +175,11 @@ namespace PumoxTest.DataBase.Repositories
 
         #endregion
 
-        public virtual int GetCount(Expression<Func<TEntity, bool>> filter = null)
-        {
-            IQueryable<TEntity> query = CreateQuery(filter, null);
-            return query.Count();
-
-        }
-
         public virtual TEntity GetById(object id)
         {
             return DbSet.Find(id);
         }
 
-        public virtual bool CheckIfExist(object id)
-        {
-            var data = DbSet.Find(id);
-            return data != null;
-        }
-
-        public virtual bool CheckIfExist(object id, object id2)
-        {
-            var data = DbSet.Find(id, id2);
-            return data != null;
-        }
-
-        public virtual bool CheckIfExist(Expression<Func<TEntity, bool>> filter = null)
-        {
-            IQueryable<TEntity> query = CreateQuery(filter, null);
-            return query.Any();
-        }
 
         private IQueryable<TEntity> CreateQuery(Expression<Func<TEntity, bool>> filter = null,
            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null)
@@ -223,11 +199,6 @@ namespace PumoxTest.DataBase.Repositories
             {
                 return query;
             }
-        }
-
-        public virtual void Refresh(TEntity e)
-        {
-            Context.Entry(e).Reload();
         }
 
         public virtual void Insert(TEntity entity)
