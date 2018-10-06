@@ -10,9 +10,9 @@ namespace PumoxTest.Dto
     {
         public CompanySearchResults()
         {
-            Results = new List<Company>();
+            Results = new List<CompanyDto>();
         }
 
-        public List<Company> Results { get; set; }
+        public List<CompanyDto> Results { get; set; }
     }
 }

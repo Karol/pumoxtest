@@ -18,12 +18,4 @@ namespace PumoxTest.DataBase.Entities
         [Required]
         public string JobTitle { get; set; }
     }
-
-    public enum JobTitle
-    {
-        Administrator,
-        Developer,
-        Architect,
-        Manager
-    }
 }

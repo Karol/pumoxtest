@@ -63,6 +63,11 @@ namespace PumoxTest.DataBase.Repositories
             return GetInclude(null, orderBy, includeProperties);
         }
 
+        public IEnumerable<TEntity> GetInclude(params string[] includeProperties)
+        {
+            return GetInclude(null, null, includeProperties);
+        }
+
         #endregion        
 
         #region GetFirstOrDefault

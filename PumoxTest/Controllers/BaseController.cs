@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using PumoxTest.DataBase;
 using System;
@@ -12,10 +13,12 @@ namespace PumoxTest.Controllers
     {
         private UnitOfWork _unitOfWork;
         protected IConfiguration Configuration { get; set; }
+        protected IMapper Mapper;
 
-        public BaseController(IConfiguration config)
+        public BaseController(IConfiguration config, IMapper mapper)
         {
             Configuration = config;
+            Mapper = mapper;
         }
 
         /// <summary>

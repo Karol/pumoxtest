@@ -22,7 +22,7 @@ namespace PumoxTest.DataBase
             new Company{Name="Pumox",EstablishmentYear=1958,
                 Employees =
                 {
-                    new Employe { FirstName="Karol", LastName="Korol", DateOfBirth= Convert.ToDateTime("19-03-1987"), JobTitle = JobTitle.Developer.ToString() }
+                    new Employe { FirstName="Karol", LastName="Korol", DateOfBirth= Convert.ToDateTime("19-03-1987"), JobTitle = "Developer" }
                 }
             },
             new Company{Name="Luxmed",EstablishmentYear=2018},

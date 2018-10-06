@@ -17,6 +17,8 @@ using Microsoft.Extensions.Options;
 using PumoxTest.DataBase;
 using PumoxTest.DataBase.Repositories;
 using ZNetCS.AspNetCore.Authentication.Basic;
+using AutoMapper;
+
 
 namespace PumoxTest
 {
@@ -59,9 +61,10 @@ namespace PumoxTest
                         options.EventsType = typeof(AuthenticationEvents);    
                     });
 
+            services.AddAutoMapper(typeof(Startup));
             // configure DI for application services
             //services.AddScoped<IUserRepository, UserService>();
-            
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
