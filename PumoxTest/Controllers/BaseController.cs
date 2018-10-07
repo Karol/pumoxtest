@@ -12,13 +12,13 @@ namespace PumoxTest.Controllers
     public class BaseController : Controller
     {
         private UnitOfWork _unitOfWork;
-        protected IConfiguration Configuration { get; set; }
-        protected IMapper Mapper;
+        protected IConfiguration _configuration { get; set; }
+        protected IMapper _mapper;
 
         public BaseController(IConfiguration config, IMapper mapper)
         {
-            Configuration = config;
-            Mapper = mapper;
+            _configuration = config;
+            _mapper = mapper;
         }
 
         /// <summary>
@@ -30,7 +30,7 @@ namespace PumoxTest.Controllers
             {
                 if (_unitOfWork == null)
                 {
-                    var conString = Configuration.GetConnectionString("DefaultConnection");
+                    var conString = _configuration.GetConnectionString("DefaultConnection");
                     _unitOfWork = new UnitOfWork(conString);
                 }
                 return _unitOfWork;

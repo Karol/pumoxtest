@@ -26,13 +26,13 @@ namespace PumoxTest.Controllers
         {
             try
             {
-                CompanyDto company = Mapper.Map<CompanyDto>(UnitOfWork.CompanyRepository.GetInclude(x=>x.Id==id, "Employees").FirstOrDefault());
+                CompanyDto company = _mapper.Map<CompanyDto>(UnitOfWork.CompanyRepository.GetInclude(x=>x.Id==id, "Employees").FirstOrDefault());
                 if (company == null)
                 {
                     return NotFound($"No company with id: {id}");
                 }
 
-                CompanyDto companyDto = Mapper.Map<CompanyDto>(company);
+                CompanyDto companyDto = _mapper.Map<CompanyDto>(company);
                 return Ok(companyDto);
             }
             catch (Exception e)
@@ -49,7 +49,7 @@ namespace PumoxTest.Controllers
             {
                 var allDbCompany = UnitOfWork.CompanyRepository.GetInclude("Employees");
 
-                List<CompanyDto> companyDto = Mapper.Map<List<CompanyDto>>(allDbCompany);
+                List<CompanyDto> companyDto = _mapper.Map<List<CompanyDto>>(allDbCompany);
                 return Ok(companyDto);
             }
             catch (Exception e)
@@ -71,7 +71,7 @@ namespace PumoxTest.Controllers
                         .Select(e => e.ErrorMessage));
                     return BadRequest(message);
                 }
-                var companyDb = Mapper.Map<Company>(company);
+                var companyDb = _mapper.Map<Company>(company);
                 UnitOfWork.CompanyRepository.Insert(companyDb);
                 UnitOfWork.Save();
 
@@ -107,11 +107,11 @@ namespace PumoxTest.Controllers
 
                 company.Name = body.Name;
                 company.EstablishmentYear = body.EstablishmentYear;
-                company.Employees = Mapper.Map<List<Employe>>(body.Employees);
+                company.Employees = _mapper.Map<List<Employe>>(body.Employees);
                 UnitOfWork.CompanyRepository.Update(company);
                 UnitOfWork.Save();
 
-                CompanyDto companyDto = Mapper.Map<CompanyDto>(company);
+                CompanyDto companyDto = _mapper.Map<CompanyDto>(company);
                 return Ok(companyDto);
             }
             catch (Exception e)
@@ -167,7 +167,7 @@ namespace PumoxTest.Controllers
                 , "Employees").ToList();
 
                 CompanySearchResults result = new CompanySearchResults();
-                result.Results = Mapper.Map<List<CompanyDto>>(companyDbList);
+                result.Results = _mapper.Map<List<CompanyDto>>(companyDbList);
                 return Ok(result);
             }
             catch (Exception e)
