@@ -10,17 +10,25 @@ using Microsoft.Extensions.Configuration;
 using PumoxTest.DataBase;
 using PumoxTest.DataBase.Entities;
 using PumoxTest.Dto;
+using PumoxTest.Services;
 
 namespace PumoxTest.Controllers
 {
     [Authorize]
     [ApiController]
-    public class CompanyController : BaseController
+    public class CompanyController : Controller
     {
-        public CompanyController(IConfiguration config, IMapper mapper, IUnitOfWork unitOfWork) : base(config, mapper, unitOfWork)
+        private ICompanyService _companyService;
+
+        public CompanyController(ICompanyService companyService)
         {
+            _companyService = companyService;
         }
 
+        /// <summary>
+        /// Gets a company by id with all employees
+        /// </summary>
+        /// <param name="id">Company Id</param>
         [ProducesResponseType(typeof(CompanyDto), 200)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
@@ -29,7 +37,7 @@ namespace PumoxTest.Controllers
         {
             try
             {
-                CompanyDto companyDto = _mapper.Map<CompanyDto>(_unitOfWork.CompanyRepository.GetFirstOrDefaultInclude(filter: x=>x.Id==id, includeProperties: "Employees"));
+                CompanyDto companyDto = _companyService.Get(id);
                 if (companyDto == null)
                 {
                     return NotFound($"No company with id: {id}");
@@ -42,17 +50,14 @@ namespace PumoxTest.Controllers
             }
         }
 
-        [ProducesResponseType(typeof(CompanyDto), 200)]
+        [ProducesResponseType(typeof(List<CompanyDto>), 200)]
         [ProducesResponseType(500)]
         [Route("company")]
         public IActionResult Get()
         {
             try
             {
-                var allDbCompany = _unitOfWork.CompanyRepository.GetInclude("Employees");
-
-                List<CompanyDto> companyDto = _mapper.Map<List<CompanyDto>>(allDbCompany);
-                return Ok(companyDto);
+                return Ok(_companyService.GetAll());
             }
             catch (Exception e)
             {
@@ -61,9 +66,11 @@ namespace PumoxTest.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(201)]
+        [ProducesResponseType(typeof(long), 201)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(500)]
         [Route("company/create")]
-        public IActionResult Create([FromBody] CompanyDto company)
+        public IActionResult Create([FromBody] CompanyDto body)
         {
             try
             {
@@ -71,11 +78,9 @@ namespace PumoxTest.Controllers
                 {
                     return BadRequest(ModelState);
                 }
-                var companyDb = _mapper.Map<Company>(company);
-                _unitOfWork.CompanyRepository.Insert(companyDb);
-                _unitOfWork.Save();
+                long id = _companyService.Create(body);
 
-                return StatusCode(201, new { companyDb.Id });
+                return StatusCode(201, new { id });
             }
             catch (Exception e)
             {
@@ -85,31 +90,28 @@ namespace PumoxTest.Controllers
 
         [HttpPut]
         [ProducesResponseType(typeof(CompanyDto), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
         [Route("company/update/{id}")]
         public IActionResult Update(long id, [FromBody] CompanyDto body)
         {
             try
             {
-                Company company = _unitOfWork.CompanyRepository.GetFirstOrDefaultInclude(filter: x => x.Id == id, includeProperties: "Employees");
-                if (company == null)
+                var companyDto = _companyService.Get(id);
+
+                if (companyDto == null)
                 {
                     return NotFound($"No company with id: {id}");
                 }
-
 
                 if (!ModelState.IsValid)
                 {
                     return BadRequest(ModelState);
                 }
+                _companyService.Update(id, body);
 
-                company.Name = body.Name;
-                company.EstablishmentYear = body.EstablishmentYear;
-                company.Employees = _mapper.Map<List<Employe>>(body.Employees);
-                _unitOfWork.CompanyRepository.Update(company);
-                _unitOfWork.Save();
-
-                CompanyDto companyDto = _mapper.Map<CompanyDto>(company);
-                return Ok(companyDto);
+                return Ok(body);
             }
             catch (Exception e)
             {
@@ -118,21 +120,22 @@ namespace PumoxTest.Controllers
         }
 
         [HttpDelete]
+        [ProducesResponseType(typeof(string), 200)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
         [Route("company/delete/{id}")]
         public IActionResult Delete(long id)
         {
             try
             {
+                var companyDto = _companyService.Get(id);
 
-                Company company = _unitOfWork.CompanyRepository.GetFirstOrDefaultInclude(filter: x => x.Id == id, includeProperties: "Employees");
-
-                if (company == null)
+                if (companyDto == null)
                 {
                     return NotFound($"No company with id: {id}");
                 }
 
-                _unitOfWork.CompanyRepository.Delete(company);
-                _unitOfWork.Save();
+                _companyService.Delete(companyDto);
 
                 return Ok("Delete success");
             }
@@ -141,32 +144,23 @@ namespace PumoxTest.Controllers
                 return StatusCode(500, e.ToString());
             }
         }
-        
+
         [AllowAnonymous]
         [HttpPost]
         [ProducesResponseType(typeof(CompanySearchResults), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(500)]
         [Route("company/search")]
-        public IActionResult Search([FromBody] CompanySearchRequest request)
+        public IActionResult Search([FromBody] CompanySearchRequest body)
         {
             try
             {
-                if (request == null)
+                if (body == null)
                 {
                     return BadRequest();
                 }
 
-                var companyDbList = _unitOfWork.CompanyRepository.GetInclude(x => x.Name.Contains(request.Keyword) || x.Employees.Any(y => 
-                   y.FirstName.Contains(request.Keyword) 
-                || y.LastName.Contains(request.Keyword) 
-                || y.DateOfBirth <= request.EmployeeDateOfBirthFrom
-                || y.DateOfBirth >= request.EmployeeDateOfBirthFrom
-                || request.EmployeeJobTitles.Contains(y.JobTitle))
-                , "Employees").ToList();
-
-                CompanySearchResults result = new CompanySearchResults
-                {
-                    Results = _mapper.Map<List<CompanyDto>>(companyDbList)
-                };
+                CompanySearchResults result = _companyService.Search(body);
                 return Ok(result);
             }
             catch (Exception e)

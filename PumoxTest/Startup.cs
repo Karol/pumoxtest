@@ -18,6 +18,7 @@ using PumoxTest.DataBase;
 using PumoxTest.DataBase.Repositories;
 using ZNetCS.AspNetCore.Authentication.Basic;
 using AutoMapper;
+using PumoxTest.Services;
 
 namespace PumoxTest
 {
@@ -61,7 +62,8 @@ namespace PumoxTest
                     });
 
             services.AddAutoMapper(typeof(Startup));
-            services.AddScoped<IUnitOfWork, UnitOfWork>();            
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<ICompanyService, CompanyService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
