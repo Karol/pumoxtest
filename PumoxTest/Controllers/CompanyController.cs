@@ -20,13 +20,13 @@ namespace PumoxTest.Controllers
         {
         }
 
-        [ProducesResponseType(typeof(Company), 200)]
+        [ProducesResponseType(typeof(CompanyDto), 200)]
         [Route("company/{id}")]
         public IActionResult Get(long id)
         {
             try
             {
-                Company company = UnitOfWork.CompanyRepository.GetInclude(x=>x.Id==id, "Employees").FirstOrDefault();
+                CompanyDto company = Mapper.Map<CompanyDto>(UnitOfWork.CompanyRepository.GetInclude(x=>x.Id==id, "Employees").FirstOrDefault());
                 if (company == null)
                 {
                     return NotFound($"No company with id: {id}");
@@ -41,7 +41,7 @@ namespace PumoxTest.Controllers
             }
         }
 
-        [ProducesResponseType(typeof(Company), 200)]
+        [ProducesResponseType(typeof(CompanyDto), 200)]
         [Route("company")]
         public IActionResult Get()
         {
@@ -60,14 +60,22 @@ namespace PumoxTest.Controllers
 
         [HttpPost]
         [Route("company/create")]
-        public IActionResult Create([FromBody] Company company)
+        public IActionResult Create([FromBody] CompanyDto company)
         {
             try
             {
-                UnitOfWork.CompanyRepository.Insert(company);
+                if (!ModelState.IsValid)
+                {
+                    var message = string.Join(" | ", ModelState.Values
+                        .SelectMany(v => v.Errors)
+                        .Select(e => e.ErrorMessage));
+                    return BadRequest(message);
+                }
+                var companyDb = Mapper.Map<Company>(company);
+                UnitOfWork.CompanyRepository.Insert(companyDb);
                 UnitOfWork.Save();
 
-                return Ok(new { company.Id });
+                return Ok(new { companyDb.Id });
             }
             catch (Exception e)
             {
@@ -76,16 +84,30 @@ namespace PumoxTest.Controllers
         }
 
         [HttpPut]
-        [ProducesResponseType(typeof(Company), 200)]
+        [ProducesResponseType(typeof(CompanyDto), 200)]
         [Route("company/update/{id}")]
-        public IActionResult Update(long id, [FromBody] Company body)
+        public IActionResult Update(long id, [FromBody] CompanyDto body)
         {
             try
             {
-                Company company = UnitOfWork.CompanyRepository.GetInclude(x => x.Id == id, "Employees").First();
+                Company company = UnitOfWork.CompanyRepository.GetInclude(x => x.Id == id, "Employees").FirstOrDefault();
+                if (company == null)
+                {
+                    return NotFound($"No company with id: {id}");
+                }
+
+
+                if (!ModelState.IsValid)
+                {
+                    var message = string.Join(" | ", ModelState.Values
+                        .SelectMany(v => v.Errors)
+                        .Select(e => e.ErrorMessage));
+                    return BadRequest(message);
+                }
+
                 company.Name = body.Name;
                 company.EstablishmentYear = body.EstablishmentYear;
-                company.Employees = body.Employees;
+                company.Employees = Mapper.Map<List<Employe>>(body.Employees);
                 UnitOfWork.CompanyRepository.Update(company);
                 UnitOfWork.Save();
 
@@ -104,11 +126,18 @@ namespace PumoxTest.Controllers
         {
             try
             {
-                Company company = UnitOfWork.CompanyRepository.GetInclude(x => x.Id == id, "Employees").First();
+
+                Company company = UnitOfWork.CompanyRepository.GetInclude(x => x.Id == id, "Employees").FirstOrDefault();
+
+                if (company == null)
+                {
+                    return NotFound($"No company with id: {id}");
+                }
+
                 UnitOfWork.CompanyRepository.Delete(company);
                 UnitOfWork.Save();
 
-                return Ok("Delete sukcess");
+                return Ok("Delete success");
             }
             catch (Exception e)
             {

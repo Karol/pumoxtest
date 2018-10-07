@@ -14,6 +14,9 @@ namespace PumoxTest.Helpers
         {
             CreateMap<Company, CompanyDto>();
             CreateMap<Employe, EmployeDto>();
+
+            CreateMap<CompanyDto, Company>().ForMember(desc => desc.Id, opt=>opt.Ignore());
+            CreateMap<EmployeDto, Employe>().ForMember(desc => desc.Id, opt => opt.Ignore());
         }           
     }
 }

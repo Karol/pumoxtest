@@ -18,7 +18,7 @@ namespace PumoxTest.DataBase.Entities
         public string Name { get; set; }
         [Required]
         public int EstablishmentYear { get; set; }
-        [Required]
+
         public ICollection<Employe> Employees { get; set; }
     }
 }
