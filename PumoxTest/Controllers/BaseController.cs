@@ -21,21 +21,5 @@ namespace PumoxTest.Controllers
             _mapper = mapper;
             _unitOfWork = unitOfWork;
         }
-
-        ///// <summary>
-        ///// UnitOfWork
-        ///// </summary>
-        //protected UnitOfWork UnitOfWork
-        //{
-        //    get
-        //    {
-        //        if (_unitOfWork == null)
-        //        {
-        //            var conString = _configuration.GetConnectionString("DefaultConnection");
-        //            _unitOfWork = new UnitOfWork(conString);
-        //        }
-        //        return _unitOfWork;
-        //    }
-        //}
     }
 }

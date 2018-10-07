@@ -73,7 +73,7 @@ namespace PumoxTest.DataBase.Repositories
         #region GetFirstOrDefault
 
         public virtual TEntity GetFirstOrDefault(Expression<Func<TEntity, bool>> filter,
-          Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy,
+          Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
            params Expression<Func<TEntity, object>>[] includeProperties)
         {
             IQueryable<TEntity> query = CreateQuery(filter, orderBy);
@@ -84,14 +84,14 @@ namespace PumoxTest.DataBase.Repositories
             return query.FirstOrDefault();
         }
 
-        public TEntity GetFirstOrDefault(Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy,
+        public TEntity GetFirstOrDefault(Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
             params Expression<Func<TEntity, object>>[] includeProperties)
         {
             return GetFirstOrDefault(orderBy, includeProperties);
         }
 
         public virtual TEntity GetFirstOrDefaultInclude(Expression<Func<TEntity, bool>> filter,
-          Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy,
+          Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
            params string[] includeProperties)
         {
             IQueryable<TEntity> query = CreateQuery(filter, orderBy);

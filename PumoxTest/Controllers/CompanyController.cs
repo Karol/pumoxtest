@@ -22,27 +22,28 @@ namespace PumoxTest.Controllers
         }
 
         [ProducesResponseType(typeof(CompanyDto), 200)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
         [Route("company/{id}")]
         public IActionResult Get(long id)
         {
             try
             {
-                CompanyDto company = _mapper.Map<CompanyDto>(_unitOfWork.CompanyRepository.GetInclude(x=>x.Id==id, "Employees").FirstOrDefault());
-                if (company == null)
+                CompanyDto companyDto = _mapper.Map<CompanyDto>(_unitOfWork.CompanyRepository.GetFirstOrDefaultInclude(filter: x=>x.Id==id, includeProperties: "Employees"));
+                if (companyDto == null)
                 {
                     return NotFound($"No company with id: {id}");
                 }
-
-                CompanyDto companyDto = _mapper.Map<CompanyDto>(company);
                 return Ok(companyDto);
             }
             catch (Exception e)
             {
-                return StatusCode(500, e.ToString());
+                return StatusCode(StatusCodes.Status500InternalServerError, e.ToString());
             }
         }
 
         [ProducesResponseType(typeof(CompanyDto), 200)]
+        [ProducesResponseType(500)]
         [Route("company")]
         public IActionResult Get()
         {
@@ -60,6 +61,7 @@ namespace PumoxTest.Controllers
         }
 
         [HttpPost]
+        [ProducesResponseType(201)]
         [Route("company/create")]
         public IActionResult Create([FromBody] CompanyDto company)
         {
@@ -67,16 +69,13 @@ namespace PumoxTest.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    var message = string.Join(" | ", ModelState.Values
-                        .SelectMany(v => v.Errors)
-                        .Select(e => e.ErrorMessage));
-                    return BadRequest(message);
+                    return BadRequest(ModelState);
                 }
                 var companyDb = _mapper.Map<Company>(company);
                 _unitOfWork.CompanyRepository.Insert(companyDb);
                 _unitOfWork.Save();
 
-                return Ok(new { companyDb.Id });
+                return StatusCode(201, new { companyDb.Id });
             }
             catch (Exception e)
             {
@@ -91,7 +90,7 @@ namespace PumoxTest.Controllers
         {
             try
             {
-                Company company = _unitOfWork.CompanyRepository.GetInclude(x => x.Id == id, "Employees").FirstOrDefault();
+                Company company = _unitOfWork.CompanyRepository.GetFirstOrDefaultInclude(filter: x => x.Id == id, includeProperties: "Employees");
                 if (company == null)
                 {
                     return NotFound($"No company with id: {id}");
@@ -100,10 +99,7 @@ namespace PumoxTest.Controllers
 
                 if (!ModelState.IsValid)
                 {
-                    var message = string.Join(" | ", ModelState.Values
-                        .SelectMany(v => v.Errors)
-                        .Select(e => e.ErrorMessage));
-                    return BadRequest(message);
+                    return BadRequest(ModelState);
                 }
 
                 company.Name = body.Name;
@@ -128,7 +124,7 @@ namespace PumoxTest.Controllers
             try
             {
 
-                Company company = _unitOfWork.CompanyRepository.GetInclude(x => x.Id == id, "Employees").FirstOrDefault();
+                Company company = _unitOfWork.CompanyRepository.GetFirstOrDefaultInclude(filter: x => x.Id == id, includeProperties: "Employees");
 
                 if (company == null)
                 {
@@ -167,8 +163,10 @@ namespace PumoxTest.Controllers
                 || request.EmployeeJobTitles.Contains(y.JobTitle))
                 , "Employees").ToList();
 
-                CompanySearchResults result = new CompanySearchResults();
-                result.Results = _mapper.Map<List<CompanyDto>>(companyDbList);
+                CompanySearchResults result = new CompanySearchResults
+                {
+                    Results = _mapper.Map<List<CompanyDto>>(companyDbList)
+                };
                 return Ok(result);
             }
             catch (Exception e)
