@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace PumoxTest.Dto
-{ 
+{
     public class EmployeDto
     {
         [Required]
@@ -18,6 +18,7 @@ namespace PumoxTest.Dto
         public DateTime DateOfBirth { get; set; }
 
         [Required]
+        [EnumDataType(typeof(JobTitle), ErrorMessage = "Given JobTitle is invalid. Available JobTitle are: Administrator, Developer, Architect, Manager")]
         public string JobTitle { get; set; }
     }
 
