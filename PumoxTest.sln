@@ -5,7 +5,9 @@ VisualStudioVersion = 15.0.28010.2036
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PumoxTest", "PumoxTest\PumoxTest.csproj", "{84CB3769-C30F-4B16-84AD-B93854D53F8F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PumoxTest.DataBase", "PumoxTest.DataBase\PumoxTest.DataBase.csproj", "{87E38E98-E996-41AF-A26D-7E98263746E7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PumoxTest.DataBase", "PumoxTest.DataBase\PumoxTest.DataBase.csproj", "{87E38E98-E996-41AF-A26D-7E98263746E7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PumoxTest.UnitTests", "PumoxTest.UnitTests\PumoxTest.UnitTests.csproj", "{3BCE02DE-36E8-4F04-A480-4CB135CB6B3F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{87E38E98-E996-41AF-A26D-7E98263746E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{87E38E98-E996-41AF-A26D-7E98263746E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{87E38E98-E996-41AF-A26D-7E98263746E7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3BCE02DE-36E8-4F04-A480-4CB135CB6B3F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3BCE02DE-36E8-4F04-A480-4CB135CB6B3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3BCE02DE-36E8-4F04-A480-4CB135CB6B3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3BCE02DE-36E8-4F04-A480-4CB135CB6B3F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

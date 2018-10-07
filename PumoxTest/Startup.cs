@@ -62,8 +62,8 @@ namespace PumoxTest
                     });
 
             services.AddAutoMapper(typeof(Startup));
-            // configure DI for application services
-            //services.AddScoped<IUserRepository, UserService>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+
 
         }
 

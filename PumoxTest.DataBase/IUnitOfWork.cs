@@ -1,10 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using PumoxTest.DataBase.Entities;
+using PumoxTest.DataBase.Repositories;
 
 namespace PumoxTest.DataBase
 {
-    interface IUnitOfWork
+    public interface IUnitOfWork
     {
+        GenericRepository<Company> CompanyRepository { get; }
+        GenericRepository<Employe> EmployeRepository { get; }
+
+        void Dispose();
+        void Save();
     }
 }

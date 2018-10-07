@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using PumoxTest.DataBase;
 using PumoxTest.DataBase.Entities;
 using PumoxTest.Dto;
 
@@ -16,7 +17,7 @@ namespace PumoxTest.Controllers
     [ApiController]
     public class CompanyController : BaseController
     {
-        public CompanyController(IConfiguration config, IMapper mapper) : base(config, mapper)
+        public CompanyController(IConfiguration config, IMapper mapper, IUnitOfWork unitOfWork) : base(config, mapper, unitOfWork)
         {
         }
 
@@ -26,7 +27,7 @@ namespace PumoxTest.Controllers
         {
             try
             {
-                CompanyDto company = _mapper.Map<CompanyDto>(UnitOfWork.CompanyRepository.GetInclude(x=>x.Id==id, "Employees").FirstOrDefault());
+                CompanyDto company = _mapper.Map<CompanyDto>(_unitOfWork.CompanyRepository.GetInclude(x=>x.Id==id, "Employees").FirstOrDefault());
                 if (company == null)
                 {
                     return NotFound($"No company with id: {id}");
@@ -47,7 +48,7 @@ namespace PumoxTest.Controllers
         {
             try
             {
-                var allDbCompany = UnitOfWork.CompanyRepository.GetInclude("Employees");
+                var allDbCompany = _unitOfWork.CompanyRepository.GetInclude("Employees");
 
                 List<CompanyDto> companyDto = _mapper.Map<List<CompanyDto>>(allDbCompany);
                 return Ok(companyDto);
@@ -72,8 +73,8 @@ namespace PumoxTest.Controllers
                     return BadRequest(message);
                 }
                 var companyDb = _mapper.Map<Company>(company);
-                UnitOfWork.CompanyRepository.Insert(companyDb);
-                UnitOfWork.Save();
+                _unitOfWork.CompanyRepository.Insert(companyDb);
+                _unitOfWork.Save();
 
                 return Ok(new { companyDb.Id });
             }
@@ -90,7 +91,7 @@ namespace PumoxTest.Controllers
         {
             try
             {
-                Company company = UnitOfWork.CompanyRepository.GetInclude(x => x.Id == id, "Employees").FirstOrDefault();
+                Company company = _unitOfWork.CompanyRepository.GetInclude(x => x.Id == id, "Employees").FirstOrDefault();
                 if (company == null)
                 {
                     return NotFound($"No company with id: {id}");
@@ -108,8 +109,8 @@ namespace PumoxTest.Controllers
                 company.Name = body.Name;
                 company.EstablishmentYear = body.EstablishmentYear;
                 company.Employees = _mapper.Map<List<Employe>>(body.Employees);
-                UnitOfWork.CompanyRepository.Update(company);
-                UnitOfWork.Save();
+                _unitOfWork.CompanyRepository.Update(company);
+                _unitOfWork.Save();
 
                 CompanyDto companyDto = _mapper.Map<CompanyDto>(company);
                 return Ok(companyDto);
@@ -127,15 +128,15 @@ namespace PumoxTest.Controllers
             try
             {
 
-                Company company = UnitOfWork.CompanyRepository.GetInclude(x => x.Id == id, "Employees").FirstOrDefault();
+                Company company = _unitOfWork.CompanyRepository.GetInclude(x => x.Id == id, "Employees").FirstOrDefault();
 
                 if (company == null)
                 {
                     return NotFound($"No company with id: {id}");
                 }
 
-                UnitOfWork.CompanyRepository.Delete(company);
-                UnitOfWork.Save();
+                _unitOfWork.CompanyRepository.Delete(company);
+                _unitOfWork.Save();
 
                 return Ok("Delete success");
             }
@@ -158,7 +159,7 @@ namespace PumoxTest.Controllers
                     return BadRequest();
                 }
 
-                var companyDbList = UnitOfWork.CompanyRepository.GetInclude(x => x.Name.Contains(request.Keyword) || x.Employees.Any(y => 
+                var companyDbList = _unitOfWork.CompanyRepository.GetInclude(x => x.Name.Contains(request.Keyword) || x.Employees.Any(y => 
                    y.FirstName.Contains(request.Keyword) 
                 || y.LastName.Contains(request.Keyword) 
                 || y.DateOfBirth <= request.EmployeeDateOfBirthFrom

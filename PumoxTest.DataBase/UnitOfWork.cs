@@ -3,7 +3,7 @@ using System;
 
 namespace PumoxTest.DataBase
 {
-    public class UnitOfWork : IDisposable
+    public class UnitOfWork : IDisposable, IUnitOfWork
     {
         private bool disposed;
         private PumoxTestContext Context { get; set; }
