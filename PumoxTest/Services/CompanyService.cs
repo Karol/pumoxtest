@@ -42,26 +42,26 @@ namespace PumoxTest.Services
 
         public CompanyDto Get(long id)
         {
-            var companyDto = _mapper.Map<CompanyDto>(_unitOfWork.CompanyRepository.GetFirstOrDefaultInclude(filter: x => x.Id == id, includeProperties: "Employees"));
+            var companyDto = _mapper.Map<CompanyDto>(_unitOfWork.CompanyRepository.GetFirstOrDefaultInclude(filter: x => x.Id == id, includeProperties: x => x.Employees));
             return companyDto;
         }
 
         public IEnumerable<CompanyDto> GetAll()
         {
-            var companyDbList = _unitOfWork.CompanyRepository.GetInclude("Employees");
+            var companyDbList = _unitOfWork.CompanyRepository.Get(includeProperties: x=>x.Employees);
             List<CompanyDto> companyDtoList = _mapper.Map<List<CompanyDto>>(companyDbList);
             return companyDtoList;
         }
 
         public CompanySearchResults Search(CompanySearchRequest searchRequest)
         {
-            var companyDbList = _unitOfWork.CompanyRepository.GetInclude(x => x.Name.Contains(searchRequest.Keyword) || x.Employees.Any(y =>
+            var companyDbList = _unitOfWork.CompanyRepository.Get(x => x.Name.Contains(searchRequest.Keyword) || x.Employees.Any(y =>
                   y.FirstName.Contains(searchRequest.Keyword)
                || y.LastName.Contains(searchRequest.Keyword)
                || y.DateOfBirth <= searchRequest.EmployeeDateOfBirthFrom
                || y.DateOfBirth >= searchRequest.EmployeeDateOfBirthFrom
                || searchRequest.EmployeeJobTitles.Contains(y.JobTitle))
-               , "Employees").ToList();
+               , includeProperties: x => x.Employees).ToList();
 
             return new CompanySearchResults
             {
@@ -72,7 +72,7 @@ namespace PumoxTest.Services
 
         public void Update(long id, CompanyDto companyDto)
         {
-            Company company = _unitOfWork.CompanyRepository.GetFirstOrDefaultInclude(filter: x => x.Id == id, includeProperties: "Employees");
+            Company company = _unitOfWork.CompanyRepository.GetFirstOrDefaultInclude(filter: x => x.Id == id, includeProperties: x => x.Employees);
             company.Name = companyDto.Name;
             company.EstablishmentYear = companyDto.EstablishmentYear;
             company.Employees = _mapper.Map<List<Employe>>(companyDto.Employees);

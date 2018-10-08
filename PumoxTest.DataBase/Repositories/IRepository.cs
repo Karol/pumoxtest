@@ -10,43 +10,38 @@ namespace PumoxTest.DataBase.Repositories
     {
         #region Get
 
-        IEnumerable<TEntity> Get(Expression<Func<TEntity, bool>> filter = null,
-           Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
+        IEnumerable<TEntity> Get(
+            Expression<Func<TEntity, bool>> filter = null,
+            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
             params Expression<Func<TEntity, object>>[] includeProperties);
 
-        IEnumerable<TEntity> Get(Expression<Func<TEntity, bool>> filter = null,
+        IEnumerable<TEntity> Get(
+            Expression<Func<TEntity, bool>> filter = null,
             params Expression<Func<TEntity, object>>[] includeProperties);
 
-        IEnumerable<TEntity> Get(Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
+        IEnumerable<TEntity> Get(
+            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
             params Expression<Func<TEntity, object>>[] includeProperties);
-
-        IEnumerable<TEntity> GetInclude(Expression<Func<TEntity, bool>> filter = null,
-          Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
-           params string[] includeProperties);
-
-        IEnumerable<TEntity> GetInclude(Expression<Func<TEntity, bool>> filter = null,
-            params string[] includeProperties);
-
-        IEnumerable<TEntity> GetInclude(Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
-            params string[] includeProperties);
 
         #endregion
 
         #region GetFirstOrDefault
 
-        TEntity GetFirstOrDefault(Expression<Func<TEntity, bool>> filter,
-          Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy,
+        TEntity GetFirstOrDefault(
+           Expression<Func<TEntity, bool>> filter,
+           Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy);
+
+        TEntity GetFirstOrDefault(
+            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy);
+
+        TEntity GetFirstOrDefaultInclude(
+           Expression<Func<TEntity, bool>> filter,
+           Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy,
            params Expression<Func<TEntity, object>>[] includeProperties);
 
-        TEntity GetFirstOrDefault(Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy,
-            params Expression<Func<TEntity, object>>[] includeProperties);
-
-        TEntity GetFirstOrDefaultInclude(Expression<Func<TEntity, bool>> filter,
-          Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy,
-           params string[] includeProperties);
-
-        TEntity GetFirstOrDefaultInclude(Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy,
-            params string[] includeProperties);
+        TEntity GetFirstOrDefaultInclude(
+           Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy,
+           params Expression<Func<TEntity, object>>[] includeProperties);
 
         #endregion
 

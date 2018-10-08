@@ -42,37 +42,24 @@ namespace PumoxTest.DataBase.Repositories
             return Get(null, orderBy, includeProperties);
         }
 
-        public virtual IEnumerable<TEntity> GetInclude(Expression<Func<TEntity, bool>> filter = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null, params string[] includeProperties)
-        {
-            IQueryable<TEntity> query = CreateQuery(filter, orderBy);
-
-            foreach (var include in includeProperties)
-            {
-                query = query.Include(include.Trim());
-            }
-            return query.ToList();
-        }
-
-        public IEnumerable<TEntity> GetInclude(Expression<Func<TEntity, bool>> filter = null, params string[] includeProperties)
-        {
-            return GetInclude(filter, null, includeProperties);
-        }
-
-        public IEnumerable<TEntity> GetInclude(Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null, params string[] includeProperties)
-        {
-            return GetInclude(null, orderBy, includeProperties);
-        }
-
-        public IEnumerable<TEntity> GetInclude(params string[] includeProperties)
-        {
-            return GetInclude(null, null, includeProperties);
-        }
-
         #endregion        
 
         #region GetFirstOrDefault
 
-        public virtual TEntity GetFirstOrDefault(Expression<Func<TEntity, bool>> filter,
+        public virtual TEntity GetFirstOrDefault(
+            Expression<Func<TEntity, bool>> filter,
+          Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null)
+        {
+            IQueryable<TEntity> query = CreateQuery(filter, orderBy);
+            return query.FirstOrDefault();
+        }
+
+        public TEntity GetFirstOrDefault(Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null)
+        {
+            return GetFirstOrDefault(orderBy);
+        }
+
+        public virtual TEntity GetFirstOrDefaultInclude(Expression<Func<TEntity, bool>> filter,
           Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
            params Expression<Func<TEntity, object>>[] includeProperties)
         {
@@ -84,26 +71,8 @@ namespace PumoxTest.DataBase.Repositories
             return query.FirstOrDefault();
         }
 
-        public TEntity GetFirstOrDefault(Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
-            params Expression<Func<TEntity, object>>[] includeProperties)
-        {
-            return GetFirstOrDefault(orderBy, includeProperties);
-        }
-
-        public virtual TEntity GetFirstOrDefaultInclude(Expression<Func<TEntity, bool>> filter,
-          Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
-           params string[] includeProperties)
-        {
-            IQueryable<TEntity> query = CreateQuery(filter, orderBy);
-            foreach (var include in includeProperties)
-            {
-                query = query.Include(include.Trim());
-            }
-            return query.FirstOrDefault();
-        }
-
         public TEntity GetFirstOrDefaultInclude(Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy,
-            params string[] includeProperties)
+            params Expression<Func<TEntity, object>>[] includeProperties)
         {
             return GetFirstOrDefaultInclude(null, orderBy, includeProperties);
         }
