@@ -44,6 +44,10 @@ namespace PumoxTest.Controllers
             }
         }
 
+        /// <summary>
+        /// Gets all company with all employees
+        /// </summary>
+        /// <returns>List<CompanyDto></returns>
         [ProducesResponseType(typeof(List<CompanyDto>), 200)]
         [ProducesResponseType(500)]
         [Route("company")]
