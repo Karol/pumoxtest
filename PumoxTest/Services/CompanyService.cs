@@ -13,6 +13,7 @@ namespace PumoxTest.Services
     {
         IEnumerable<CompanyDto> GetAll();
         CompanyDto Get(long id);
+        ValidateDto Validate(CompanyDto companyDto);
         long Create(CompanyDto companyDto);
         CompanySearchResults Search(CompanySearchRequest searchRequest);
         void Update(long id, CompanyDto companyDto);
@@ -23,6 +24,16 @@ namespace PumoxTest.Services
     {
         public CompanyService(IMapper mapper, IUnitOfWork unitOfWork) : base(mapper, unitOfWork)
         {
+        }
+
+        public ValidateDto Validate(CompanyDto companyDto)
+        {
+            var companyDb = _unitOfWork.CompanyRepository.GetFirstOrDefault(filter: x => x.Name.Equals(companyDto.Name));
+            if (companyDb != null)
+            {
+                return new ValidateDto() { IsValid = false, Msg = $"Company: '{companyDto.Name}' already exists in the database" };
+            }
+            return new ValidateDto();            
         }
 
         public long Create(CompanyDto companyDto)

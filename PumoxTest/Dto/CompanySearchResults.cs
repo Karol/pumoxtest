@@ -8,11 +8,11 @@ namespace PumoxTest.Dto
 {
     public class CompanySearchResults
     {
+        public List<CompanyDto> Results { get; set; }
+
         public CompanySearchResults()
         {
             Results = new List<CompanyDto>();
         }
-
-        public List<CompanyDto> Results { get; set; }
     }
 }

@@ -63,10 +63,12 @@ namespace PumoxTest.UnitTests
 
             var newCompanyDto = new CompanyDto()
             {
-                Name = "test",
+                Name = "test new",
                 EstablishmentYear = 2018,
                 Employees = new List<EmployeDto>() { new EmployeDto() { LastName = "Jan", FirstName = "Nowak", DateOfBirth = DateTime.Now, JobTitle = JobTitle.Developer.ToString() } }
             };
+            mockService.Setup(s => s.Validate(newCompanyDto))
+                .Returns(new ValidateDto());
 
             mockService.Setup(s => s.Create(newCompanyDto))
                 .Returns(id);
@@ -80,6 +82,33 @@ namespace PumoxTest.UnitTests
             Assert.Equal(201, okResult.StatusCode);
             mockService.Verify();           
         }
+
+        [Fact]
+        public void GetCompany_Create_CompanyWithNameExist()
+        {
+
+            // Arrange
+            var mockService = new Mock<ICompanyService>();
+            var newCompanyDto = new CompanyDto()
+            {
+                Name = "test",
+                EstablishmentYear = 2018,
+                Employees = new List<EmployeDto>() { new EmployeDto() { LastName = "Jan", FirstName = "Nowak", DateOfBirth = DateTime.Now, JobTitle = JobTitle.Developer.ToString() } }
+            };
+
+            mockService.Setup(s => s.Validate(newCompanyDto))
+                .Returns(new ValidateDto() { IsValid = false, Msg= $"Company: '{newCompanyDto.Name}' already exists in the database" });
+
+            var controller = new CompanyController(mockService.Object);
+
+            // Act
+            var result = controller.Create(newCompanyDto);
+
+            var badRequest = Assert.IsType<BadRequestObjectResult>(result);
+            Assert.Equal($"Company: '{newCompanyDto.Name}' already exists in the database" , badRequest.Value);
+            mockService.Verify();
+        }
+
 
         [Fact]
         public void GetCompany_Create_BadRequest()

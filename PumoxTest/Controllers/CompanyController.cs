@@ -76,6 +76,13 @@ namespace PumoxTest.Controllers
                 {
                     return BadRequest(ModelState);
                 }
+
+                ValidateDto validate = _companyService.Validate(body);
+                if (!validate.IsValid)
+                {
+                    return BadRequest(validate.Msg);
+                }
+
                 long id = _companyService.Create(body);
 
                 return StatusCode(201, new { id });

@@ -8,11 +8,6 @@ namespace PumoxTest.Dto
 {
     public class CompanyDto
     {
-        public CompanyDto()
-        {
-            Employees = new List<EmployeDto>();
-        }
-
         [Required]
         public string Name { get; set; }
 
@@ -20,5 +15,10 @@ namespace PumoxTest.Dto
         public int EstablishmentYear { get; set; }
 
         public ICollection<EmployeDto> Employees { get; set; }
+
+        public CompanyDto()
+        {
+            Employees = new List<EmployeDto>();
+        }
     }
 }
